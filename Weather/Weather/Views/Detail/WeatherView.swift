@@ -8,11 +8,45 @@
 import SwiftUI
 
 struct WeatherView: View {
+    @State private var searchText = ""
+    
+    var searchResults: [Forecast]{
+        if searchText.isEmpty{
+            return Forecast.cities
+        }else{
+            return Forecast.cities.filter{ $0.location.contains(searchText)}
+        }
+    }
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack{
+            Color.background
+                .ignoresSafeArea()
+            
+            //MARK: - Weather Widget
+            
+            ScrollView(showsIndicators: false){
+                VStack(spacing: 20){
+                    ForEach(Forecast.cities){
+                        forecast in WeatherWidget(forecast: forecast)
+                    }
+                }
+            }
+            .safeAreaInset(edge: .top){
+                EmptyView()
+                    .frame(height: 110)
+            }
+        }
+        .overlay{
+            //MARK: - Navigationbar
+            NavigationBar(searchText: $searchText)
+        }
+        .navigationBarHidden(true)
+//        .searchable(text: $searchText,placement: .navigationBarDrawer(displayMode: .always),prompt: "Search for a city or airport")
     }
 }
 
 #Preview {
-    WeatherView()
+    NavigationView {
+        WeatherView()
+    }
 }

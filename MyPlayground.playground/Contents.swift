@@ -1,21 +1,24 @@
-struct Town{
-    let name: String
-    var citizens :[String]
-    var resource :[String:Int]
-    
-    init(name: String, citizens: [String], resource: [String:Int]){
-        self.name = name
-        self.citizens = citizens
-        self.resource = resource
+func fetchUserID(from server: String) async -> Int{
+    if server == "primary"{
+        return 97
     }
-    func fortify(){
-        print("Defend increased")
+    return 501
+}
+func fecthUserName(from server: String) async ->String{
+    let userID = await fetchUserID(from: server)
+    if userID == 501{
+        return "Khuong"
     }
+    return "Guest"
+}
+func connectUser(to server: String) async{
+    async let userID = fetchUserID(from: server)
+    async let userName = fetchUserID(from: server)
+    let greeting = await"Hello \(userName) with userID\(userID)"
+    print(greeting)
 }
 
-var anotherTown = Town(name: "Nameless island", citizens: ["Khuong","Thanh"], resource: ["Coconuts":100])
-anotherTown.citizens.append("Tom Hanks")
-print(anotherTown.citizens)
-var ghostTown = Town(name:"Ghost McGhostface",citizens: [],resource: ["TumbleWeed":1])
-ghostTown.fortify()
-print(ghostTown.name)
+
+Task{
+    await connectUser(to:"primary")
+}
